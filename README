@@ -1,0 +1,69 @@
+================================
+Raspberry Pi Driver for TM1640
+================================
+
+:Author: FuryFire
+:Version: 0.1
+
+
+---------------
+Intro
+---------------
+Userland driver for 16x7segment LED display. 
+sku.104311 - http://dx.com/p/jy-mcu-16x-digital-tube-yellow-led-module-104311?Utm_rid=58973692
+
+.. image:: http://img.dxcdn.com/productimages/sku_104311_3.jpg
+
+Build on data from 
+- http://tronixstuff.wordpress.com/2012/04/09/arduino-and-tm1640-led-display-modules/
+- Datasheet
+- http://code.google.com/p/tm1638-library/
+
+
+---------------
+Installation
+---------------
+You will need Gordon's excelent wiringPi library.
+https://projects.drogon.net/raspberry-pi/wiringpi/
+Install it according to the instructions on the site
+
+Then you need to build the TM1640 driver.
+
+
+::
+
+> sudo apt-get install build-essential 
+> make
+> sudo make install
+
+
+----------------------
+Usage
+----------------------
+Connect the display to the GPIO pins - I will use the wiringPi pin numbering scheme.
+https://projects.drogon.net/raspberry-pi/wiringpi/pins/
+
+- VND goes to header #2   (5V)
+- GND goes to header #6   (0V)
+- DIN goes to header #11  (GPIO2)
+- SCLK goes to header #12 (GPIO1)
+
+Run the tool as root
+::
+
+> sudo tm1640
+> sudo tm1640 on 1
+> sudo tm1640 clear
+> sudo tm1640 display 0 "123456789012345"
+
+-----------------------
+Fonts customization
+-----------------------
+Fonts are defined in src/fonts.h you will need to recompile the project with /make/ in other to apply changes.
+It consist of a 2 dimensional table. First columm representing the ASCII value for the charecter. And the second value defining the LED pattern for that charecter. 
+Unsupported charecters are simply set to a space. 
+Dots are automatically added to the previous segment so you just pass floats as plain strings. "14.2" will as such only use 3 fields and not 4.
+
+- http://en.wikipedia.org/wiki/Seven-segment_display
+- http://www.asciitable.com/
+- http://www.uize.com/examples/seven-segment-display.html (Use the value listed under GFEDCBA)
