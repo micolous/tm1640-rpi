@@ -11,8 +11,6 @@
 #define DIN_PIN 0
 #define SCLK_PIN 1
 
-#include "font.h"
-
 #define INVERT_MODE_NONE 0
 #define INVERT_MODE_VERTICAL 1
 
@@ -24,6 +22,7 @@ typedef struct {
 
 
 tm1640_display* tm1640_init(int clockPin, int dataPin);
+void tm1640_destroy(tm1640_display* display);
 
 int tm1640_displayWrite(tm1640_display* display, int offset, const char * string, char length, int invertMode);
 

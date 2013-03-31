@@ -1,4 +1,5 @@
 #include "tm1640.h"
+#include "font.h"
 
 /**
  * Flips 7-segment characters vertical, for display in a mirror.
@@ -130,12 +131,23 @@ tm1640_display* tm1640_init(int clockPin, int dataPin)
 	
 	tm1640_display* display = malloc(sizeof(tm1640_display));
 	
+	// clear for good measure
+	memset(display, 0, sizeof(tm1640_display));
+	
 	display->clockPin = clockPin;
 	display->dataPin = dataPin;
 
 	return display;
 
 }
+
+/**
+ * Destroy the structure associated with the connection to the TM1640.
+ */
+void tm1640_destroy(tm1640_display* display) {
+	free(display);
+}
+
 
 /**
  * Send a single byte command and flash the clock afterwards (For some odd unknown reason)
