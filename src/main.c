@@ -3,6 +3,11 @@
 int main( int argc, char** argv )
 {
 	tm1640_display* display = tm1640_init(1, 0);
+	if (display == NULL) {
+		fprintf(stderr, "%s: display initialisation failed\n", argv[0]);
+		return EXIT_FAILURE;
+	}
+	
 	if(argc > 1)
 	{
 		if(strcmp( argv[1], "on" ) == 0 && argc == 3)
@@ -38,8 +43,12 @@ int main( int argc, char** argv )
 	}
 	else
 	{
-		printf( "TM1640 display tool\n" );
-		printf( "Usage: tm1640 on | off | clear | write\n" );
+		fprintf(stderr, "TM1640 display tool\n" );
+		fprintf(stderr, "Usage:\n");
+		fprintf(stderr, "  tm1640 on <brightness> : Turn on display, brightness 1 (lowest) - 7 (highest)\n");
+		fprintf(stderr, "  tm1640 off             : Turn off display, preserving data.\n");
+		fprintf(stderr, "  tm1640 clear           : Clear display.\n");
+		fprintf(stderr, "  tm1640 write <msg>     : Write message to display, up to 16 chars.\n");		
 		return (EXIT_FAILURE);
 	}
 
