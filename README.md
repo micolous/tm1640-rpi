@@ -1,11 +1,10 @@
 # Raspberry Pi Driver for TM1640 display #
 
-Written by FuryFire
-With some help from Michael Farrell
+Written by [FuryFire](https://bitbucket.org/furyfire/raspi).
 
-Userland driver for [16 digit 7segment LED display TM1640](http://dx.com/p/jy-mcu-16x-digital-tube-yellow-led-module-104311?Utm_rid=58973692).
+Forked off into a seperate project with a library by Michael Farrell.
 
-[![Image](http://img.dxcdn.com/productimages/sku_104311_3.jpg)](http://dx.com/p/jy-mcu-16x-digital-tube-yellow-led-module-104311?Utm_rid=58973692)
+Userspace driver for [TM1640 16 digit 7 segment LED display controller](http://www.dx.com/p/104311).
 
 ## Resources ##
 
