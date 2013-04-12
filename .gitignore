@@ -1,0 +1,7 @@
+*.pyc
+*.pyo
+*.o
+*.so
+tm1640
+doc/build
+*~

@@ -1,25 +1,22 @@
 # Raspberry Pi Driver for TM1640 display IC #
 
-Written by [FuryFire](https://bitbucket.org/furyfire/raspi).
+[Arduino version](https://code.google.com/p/tm1638-library/) written by Ricardo Batista, [ported to Raspberry Pi](https://bitbucket.org/furyfire/raspi/src/default/hw/tm1640?at=default) by [FuryFire](https://bitbucket.org/furyfire).
 
-Forked off into a seperate project with a library by Michael Farrell.
+Forked off into a seperate project with a bunch of work done on it by [Michael Farrell](http://micolous.id.au).
 
-Userspace driver for [TM1640 16 digit 7 segment LED display controller](http://www.dx.com/p/104311).
+Userspace driver for [Titan Microelectronics TM1640](http://www.titanmec.com/doce/product-detail-180.html) 16 digit 7 segment LED display controller.
 
-## Licensing ##
+## License ##
 
-- Original Arduino library is GPLv3
-- No license info on RPI version
-- Other code in same repo is GPLv2 / GPLv3
-- Waiting on FuryFire for clarification, sent message via Bitbucket on 2013-04-12.
-
+GPLv3.
 
 ## Resources ##
 
-- [Arduino TM1638/1640 library](http://code.google.com/p/tm1638-library/)
+- [Original Arduino TM1638/1640 library that this is based on](http://code.google.com/p/tm1638-library/)
+- [Rasbperry Pi port of Arduino version](https://bitbucket.org/furyfire/raspi/src/default/hw/tm1640?at=default)
 - [Low level TM1640 interface notes](http://tronixstuff.wordpress.com/2012/04/09/arduino-and-tm1640-led-display-modules/)
-- [Manufacturer's website for TM1640 IC](http://www.titanmec.com/doce/product-detail-180.html)
-- [Datasheet for TM1640 IC](http://db.tt/3lrAsvHI) (In Chinese on pages 1 - 10, English version starts on page 11)
+- [Datasheet for TM1640 IC](http://db.tt/3lrAsvHI) (In Chinese on pages 1 - 10, English version starts on page 11) [English-only datasheet on manufacturer's site](http://www.titanmec.com/doce/product-downloads-180.html)
+- [Assembled unit with display available at DealExtreme](http://www.dx.com/p/104311)
 
 ## Installation ##
 
@@ -91,9 +88,9 @@ To write at an offset (for partial screen updates):
 
 ## Customising fonts ##
 
-Fonts are defined in `src/libtm1640/fonts.h` you will need to recompile the project in order to apply changes.
+Fonts are defined in `src/libtm1640/fonts.h`, which is embedded in the library.
 
-It consist of a 1 dimensional table, defining the LED pattern for that character.
+It consists of a 1 dimensional table, defining the LED pattern for that character.
 
 Unsupported charecters are simply set to a space. 
 
