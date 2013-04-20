@@ -1,0 +1,38 @@
+RPi TM1640 licensing (direct message)
+micolous wrote 2013-04-12
+
+micolous sent you a message on Bitbucket:
+
+Hi,
+I've done a bunch of work on your RPi TM1640 display driver code, and forked it off into a separate repository of my own.
+
+I've cleaned up some of the code and build infrastructure, added some new features, made it a library (and adapted your existing command-line tool to work with the library), and added Python bindings.
+
+However now as I actually want to release that again, I need to clarify the licensing with you of the original project, as you have not explicitly specified it.
+
+My thought is as your work is a derivative of the Arduino TM16xx library, which is licensed under the GPLv3, this would make your project also licensed under the GPLv3 even if you have not explicitly written this.
+
+You have other code in your raspi repository that is licensed under the GPLv2 and GPLv3, which would lead me to make a reasonable assumption that this is something you would be happy with.
+
+Can you please confirm this?
+
+If I don't hear from you, I will follow through with the assumption that the RPi TM1640 display driver is a derivative of the Arduino version, and thus GPLv3, and release my modified version under the same terms.
+
+Thanks,
+
+
+Michael
+
+furyfire wrote 2013-04-12
+
+furyfire sent you a message on Bitbucket:
+
+You're free to do whatever you want with the code.
+
+And you're right it's a derivative of the Arduino TM16xx project so would be natural to keep it as GPLv3.
+
+My only tiny request is that you maintain the affiliation link for the product page on http://dx.com
+
+But you're of course free to do what you want - I take no ownership of the code.
+
+I'll be happy to see the end result!

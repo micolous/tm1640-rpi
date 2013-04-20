@@ -8,7 +8,7 @@ Forked off into a seperate project with a bunch of work done on it by [Michael F
 
 ## License ##
 
-GPLv3.
+[GPLv3](https://www.gnu.org/licenses/gpl-3.0.html).
 
 ## Installation ##
 
