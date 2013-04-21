@@ -25,7 +25,10 @@ sys.path.insert(0, os.path.abspath('../../src/python/'))
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.todo', 'sphinx.ext.coverage']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.todo', 'sphinx.ext.coverage', 'breathe']
+
+breathe_projects = {'tm1640-rpi': 'build/doxygen-xml/'}
+breathe_default_project = 'tm1640-rpi'
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

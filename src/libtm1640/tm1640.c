@@ -17,10 +17,7 @@
 #include "tm1640.h"
 #include "font.h"
 
-/**
- * Flips 7-segment characters vertical, for display in a mirror.
- *
- */
+
 char tm1640_invertVertical(char input) {
 	return (input & 0xC0) |
 		// swap top and bottom
@@ -35,19 +32,6 @@ char tm1640_invertVertical(char input) {
 }
 
 
-/**
- * displayWrite
- *  offset: offset on the display to start writing from
- *  string: string to write to the display
- *  length: length of the string to write to the display
- *  invertMode: invert mode to apply to text written to the display
- *
- * Returns -EINVAL if:
- *  - invertMode is invalid
- *  - offset + length is > 16 (size of the display)
- *
- * Returns 0 on success.
- */
 int tm1640_displayWrite(tm1640_display* display, int offset, const char * string, char length, int invertMode) {
 	//If we can actually print this
 	if(offset + length <= 16) {
@@ -84,11 +68,6 @@ int tm1640_displayWrite(tm1640_display* display, int offset, const char * string
 }
 
 
-/**
- * Converts an ASCII character into 7 segment binary form for display.
- *
- * Returns 0 (no segments) if the character has no known translation.
- */
 char tm1640_ascii_to_7segment(char ascii) {
 	if (ascii < FONT_FIRST_CHAR || ascii > FONT_LAST_CHAR) {
 		// character than is not in font, skip.
@@ -98,10 +77,7 @@ char tm1640_ascii_to_7segment(char ascii) {
 	return DEFAULT_FONT[ascii - FONT_FIRST_CHAR];
 }
 
-/**
- * Clear the display 
- * (Writes 0 to every field)
- */
+
 void tm1640_displayClear(tm1640_display* display)
 {
 	char buffer[16];
@@ -109,10 +85,6 @@ void tm1640_displayClear(tm1640_display* display)
 	tm1640_send(display, 0xC0, buffer, 16 );
 }
 
-/**
- * Turns on the display and sets the brightness level
- * @param brightness Brightness of the LED's - This can not be set higher than 7.
- */
 void tm1640_displayOn(tm1640_display* display, char brightness) {
 	if (brightness < 1) brightness = 1;
 	if (brightness > 7) brightness = 7;
@@ -120,20 +92,12 @@ void tm1640_displayOn(tm1640_display* display, char brightness) {
 	tm1640_sendCmd(display, 0x88 + brightness);
 }
 
-/**
- * Turns off the display preserving settings
- */
+
 void tm1640_displayOff(tm1640_display* display) {
 	tm1640_sendCmd(display, 0x80);
 }
 
 
-/**
- * Initialises the display.
- *
- * Returns pointer to tm1640_display struct on success.
- * Returns NULL if wiringPiSetup() fails (permission error).
- */
 tm1640_display* tm1640_init(int clockPin, int dataPin)
 {
 	if(wiringPiSetup( ) == -1) 
@@ -158,40 +122,25 @@ tm1640_display* tm1640_init(int clockPin, int dataPin)
 
 }
 
-/**
- * Destroy the structure associated with the connection to the TM1640.
- */
+
 void tm1640_destroy(tm1640_display* display) {
 	free(display);
 }
 
 
-/**
- * Send a single byte command and flash the clock afterwards (For some odd unknown reason)
- * @param cmd
- */
-void tm1640_sendCmd(tm1640_display* display, char cmd )
+void tm1640_sendRaw(tm1640_display* display, char out )
 {
-	tm1640_send(display, 0x40, 0 ,0 );
-	tm1640_send(display, cmd, 0, 0 );
-
-	digitalWrite(display->dataPin, LOW );
-	digitalWrite( display->clockPin, LOW );
-	digitalWrite( display->clockPin, HIGH );
-	digitalWrite( display->dataPin, HIGH );
+	int i;
+	for(i = 0; i < 8; i++)
+	{
+		digitalWrite( display->clockPin, HIGH );
+		digitalWrite( display->dataPin, out & 1 ? HIGH : LOW );
+		out >>= 1;
+		delayMicroseconds( 1 );
+		digitalWrite( display->clockPin, LOW );
+	}
 }
 
-/**
- * Sends a cmd followed by len amount of data. Includes delay from wiringPi.
- *
- * Bitbanging the output pins too fast creates unpredictable results.
- *
- * @param display TM1640 display structure to use for this operation.
- * @param cmd The command
- * @param data Pointer to data that should be appended, or NULL if no data is to be passed.
- * @param len Length of data.
- 
- */
 void tm1640_send(tm1640_display* display, char cmd, char * data, int len )
 {
 	//Issue start command
@@ -214,20 +163,14 @@ void tm1640_send(tm1640_display* display, char cmd, char * data, int len )
 	digitalWrite( display->dataPin, HIGH );
 }
 
-/**
- * Shifts out the byte on the port. (The wiringPi implementation is too fast)
- * @param display TM1640 display structure to user this for this operation.
- * @param out
- */
-void tm1640_sendRaw(tm1640_display* display, char out )
+
+void tm1640_sendCmd(tm1640_display* display, char cmd )
 {
-	int i;
-	for(i = 0; i < 8; i++)
-	{
-		digitalWrite( display->clockPin, HIGH );
-		digitalWrite( display->dataPin, out & 1 ? HIGH : LOW );
-		out >>= 1;
-		delayMicroseconds( 1 );
-		digitalWrite( display->clockPin, LOW );
-	}
+	tm1640_send(display, 0x40, 0 ,0 );
+	tm1640_send(display, cmd, 0, 0 );
+
+	digitalWrite(display->dataPin, LOW );
+	digitalWrite( display->clockPin, LOW );
+	digitalWrite( display->clockPin, HIGH );
+	digitalWrite( display->dataPin, HIGH );
 }

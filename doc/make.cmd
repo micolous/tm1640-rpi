@@ -18,6 +18,7 @@ if "%1" == "" goto help
 if "%1" == "help" (
 	:help
 	echo.Please use `make ^<target^>` where ^<target^> is one of
+	echo.  doxyxml    to make Doxygen XML files required to autogenerate C library documentation
 	echo.  html       to make standalone HTML files
 	echo.  dirhtml    to make HTML files named index.html in directories
 	echo.  singlehtml to make a single large HTML file
@@ -43,6 +44,17 @@ if "%1" == "clean" (
 	del /q /s %BUILDDIR%\*
 	goto end
 )
+
+if "%1" == "doxyxml" (
+	cd source
+	doxygen
+	cd ..
+	if errorlevel 1 exit /b 1
+	echo.
+	echo.Build finished. The Doxygen XML files are in %BUILDDIR%/doxygen-xml.
+	goto end
+)
+	
 
 if "%1" == "html" (
 	%SPHINXBUILD% -b html %ALLSPHINXOPTS% %BUILDDIR%/html

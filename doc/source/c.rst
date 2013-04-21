@@ -80,3 +80,8 @@ If you are viewing the display in a mirror, you can invert the display verticall
 
 	char* s = "1234567890123456";
 	int result = tm1640_displayWrite(display, 0, s, strlen(s), INVERT_MODE_VERTICAL);
+
+Library Reference
+-----------------
+
+.. doxygenfile:: tm1640.h
