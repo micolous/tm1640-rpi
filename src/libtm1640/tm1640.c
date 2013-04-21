@@ -55,6 +55,9 @@ int tm1640_displayWrite(tm1640_display* display, int offset, const char * string
 		memset(buffer, 0, sizeof(buffer));
 		
 		int c;
+		
+		// translate input to segments
+		// TODO: provide function to allow raw writing of segments
 		for (c=0; c<length; c++) {
 			buffer[c] = tm1640_ascii_to_7segment(string[c]);
 			
@@ -110,11 +113,10 @@ void tm1640_displayClear(tm1640_display* display)
  * Turns on the display and sets the brightness level
  * @param brightness Brightness of the LED's - This can not be set higher than 7.
  */
-void tm1640_displayOn(tm1640_display* display, int brightness) {
-	if(brightness > 7) {
-		brightness = 7;
-	}
-	//printf("Display: ON - Brightness: %d\n",brightness);
+void tm1640_displayOn(tm1640_display* display, char brightness) {
+	if (brightness < 1) brightness = 1;
+	if (brightness > 7) brightness = 7;
+	
 	tm1640_sendCmd(display, 0x88 + brightness);
 }
 
@@ -122,7 +124,6 @@ void tm1640_displayOn(tm1640_display* display, int brightness) {
  * Turns off the display preserving settings
  */
 void tm1640_displayOff(tm1640_display* display) {
-	//printf("Display: OFF\n");
 	tm1640_sendCmd(display, 0x80);
 }
 
@@ -182,11 +183,13 @@ void tm1640_sendCmd(tm1640_display* display, char cmd )
 
 /**
  * Sends a cmd followed by len amount of data. Includes delay from wiringPi.
+ *
  * Bitbanging the output pins too fast creates unpredictable results.
+ *
  * @param display TM1640 display structure to use for this operation.
  * @param cmd The command
- * @param data Pointer to data that should be appended
- * @param len Length of data. If 0 only cmd is sent.
+ * @param data Pointer to data that should be appended, or NULL if no data is to be passed.
+ * @param len Length of data.
  
  */
 void tm1640_send(tm1640_display* display, char cmd, char * data, int len )
@@ -197,7 +200,7 @@ void tm1640_send(tm1640_display* display, char cmd, char * data, int len )
 	digitalWrite( display->clockPin, LOW );
 
 	tm1640_sendRaw(display, cmd);
-	if(len)
+	if(data != NULL)
 	{
 		int i;
 		for(i = 0; i < len; i++)
@@ -221,8 +224,9 @@ void tm1640_sendRaw(tm1640_display* display, char out )
 	int i;
 	for(i = 0; i < 8; i++)
 	{
-		digitalWrite( display->dataPin, out & ( 1 << i ) );
 		digitalWrite( display->clockPin, HIGH );
+		digitalWrite( display->dataPin, out & 1 ? HIGH : LOW );
+		out >>= 1;
 		delayMicroseconds( 1 );
 		digitalWrite( display->clockPin, LOW );
 	}
