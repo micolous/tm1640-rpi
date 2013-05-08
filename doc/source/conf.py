@@ -18,6 +18,13 @@ import sys, os
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0, os.path.abspath('../../src/python/'))
 
+# hack for readthedocs to cause it to run doxygen first
+on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+if on_rtd:
+	from subprocess import call 
+	call('doxygen')
+	del call
+
 # -- General configuration -----------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
