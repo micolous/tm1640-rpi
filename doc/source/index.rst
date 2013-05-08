@@ -10,8 +10,8 @@ Contents:
    building
    wiring
    sh
-   c
    python
+   c
    fonts
 
 

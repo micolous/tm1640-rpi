@@ -50,6 +50,8 @@ class TM1640(object):
 		:type data_pin: int
 		
 		:throws ImportError: If ``libtm1640.so`` could not be found by your dynamic linker.  Typically ``libtm1640.so`` should be installed in to ``/usr/lib``.
+		
+		:throws Exception: If there is a problem accessing BCM GPIO, typically caused by lack of permissions.
 		"""
 		# Set this attribute to none in case of a library load error, it means the destructor will not be called.
 		self._libtm1640 = None

@@ -17,10 +17,10 @@ Resources
 
 * Original `Arduino version`_ of this library
 * `Low level TM1640 interface notes`_
-* `Datasheet 1`_ (written in Chinese pages 1 - 10, and English from page 11)
+* `Datasheet`_ (written in Chinese pages 1 - 10, and English from page 11)
 * `Assembled unit`_ from DealExtreme.
 
 .. _Low level TM1640 interface notes: http://tronixstuff.wordpress.com/2012/04/09/arduino-and-tm1640-led-display-modules/
-.. _Datasheet 1: http://db.tt/3lrAsvHI
+.. _Datasheet: http://db.tt/3lrAsvHI
 .. _Assembled unit: http://www.dx.com/p/104311
 
