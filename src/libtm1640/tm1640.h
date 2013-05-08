@@ -137,7 +137,7 @@ void tm1640_displayClear(tm1640_display* display);
  * @param display TM1640 display to set brightness of
  * @param brightness Brightness to set (1 is lowest, 7 is highest)
  */
-void tm1640_displayOn(tm1640_display* display, int brightness);
+void tm1640_displayOn(tm1640_display* display, char brightness);
 
 /**
  * Turns off the display preserving display data.
