@@ -133,9 +133,8 @@ void tm1640_sendRaw(tm1640_display* display, char out )
 	int i;
 	for(i = 0; i < 8; i++)
 	{
+		digitalWrite( display->dataPin, out & (1 << i) );
 		digitalWrite( display->clockPin, HIGH );
-		digitalWrite( display->dataPin, out & 1 ? HIGH : LOW );
-		out >>= 1;
 		delayMicroseconds( 1 );
 		digitalWrite( display->clockPin, LOW );
 	}
