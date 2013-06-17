@@ -2,6 +2,8 @@
 *.pyo
 *.o
 *.so
+*.os
 tm1640
 doc/build
 *~
+.sconsign.dblite
