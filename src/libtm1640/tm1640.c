@@ -33,38 +33,54 @@ char tm1640_invertVertical(char input) {
 
 
 int tm1640_displayWrite(tm1640_display* display, int offset, const char * string, char length, int invertMode) {
-	//If we can actually print this
-	if(offset + length <= 16) {
-		char buffer[30];
-		memset(buffer, 0, sizeof(buffer));
-		
-		int c;
-		
-		// translate input to segments
-		// TODO: provide function to allow raw writing of segments
-		for (c=0; c<length; c++) {
-			buffer[c] = tm1640_ascii_to_7segment(string[c]);
-			
-			switch (invertMode) {
-				case INVERT_MODE_NONE:
-					// do nothing
-					break;
-					
-				case INVERT_MODE_VERTICAL:
-					buffer[c] = tm1640_invertVertical(buffer[c]);
-					break;
-				
-				default:
-					return -EINVAL;
-			}
+
+	int c=0;
+	char buffer[33];
+	memset(buffer, 0, sizeof(buffer));
+	memcpy(buffer, string, sizeof(buffer));
+
+	// Translate input to segments
+	// Return -EINVAL if input string is too long.  Allowance is made for
+	// decimal points.
+	// TODO: provide function to allow raw writing of segments
+	for (c=0; c<length; c++) {
+
+		if (((buffer[c] == '.') && (offset + c) >= 17) || ((buffer[c] != '.') && (offset + c) >= 16)) {
+			return -EINVAL;
 		}
-		tm1640_sendCmd(display, 0x44 );
-		tm1640_send(display, 0xC0 + offset, buffer, c);
-		
-		return 0;
-	} else {
-		return -EINVAL;
+
+		buffer[c] = tm1640_ascii_to_7segment(buffer[c]);
+
+		switch (invertMode) {
+			case INVERT_MODE_NONE:
+				// do nothing
+				break;
+
+			case INVERT_MODE_VERTICAL:
+				buffer[c] = tm1640_invertVertical(buffer[c]);
+				break;
+
+				default:
+				return -EINVAL;
+		}
+
+		// If possible merge the decimal point with the previous
+		// character.  This is only possible if it is not the first
+		// character or if the previous character has not already had
+		// a decimal point merged.
+		if(c!=0 && (0b10000000 & buffer[c]) && !(0b10000000 & buffer[c-1])) {
+			buffer[c-1] |= 0b10000000;
+			memmove(&buffer[c], (const char *)(&buffer[c+1]), (sizeof(char)*(33-c)));
+			memset(&buffer[32], 0, sizeof(char));;
+			c--;
+			length--;
+		}
+
 	}
+	tm1640_sendCmd(display, 0x44);
+	tm1640_send(display, 0xC0 + offset, buffer, c);
+		
+	return 0;
 }
 
 
