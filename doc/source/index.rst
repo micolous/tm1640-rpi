@@ -1,6 +1,8 @@
 Welcome to tm1640-rpi's documentation!
 ======================================
 
+Source code is available in `the GitHub repository`_.
+
 Contents:
 
 .. toctree::
@@ -22,4 +24,7 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+
+.. _the GitHub repository: https://github.com/micolous/tm1640-rpi
 
