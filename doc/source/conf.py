@@ -253,3 +253,4 @@ texinfo_documents = [
 
 
 autoclass_content = 'both'
+
