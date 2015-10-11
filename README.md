@@ -27,4 +27,4 @@ Documentation is provided in the `doc` folder of this project, and can be genera
 	$ make doxyxml
 	$ make html
 
-Alternatively, documentation with the current `master` version of the code is available online at http://tm1640-rpi.rtfd.org/
+Alternatively, documentation with the current `master` version of the code might be available online at http://tm1640-rpi.rtfd.org/
