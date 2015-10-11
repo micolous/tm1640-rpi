@@ -45,7 +45,7 @@ clean:
 doxyxml:
 	cd source; doxygen; cd ..
 	@echo
-	@echo "Build finished. The Doxygen XML files are in $(BUILDDIR)/doxygen-xml."
+	@echo "Build finished. The Doxygen XML files are in source/doxygen-xml."
 	
 html:
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html

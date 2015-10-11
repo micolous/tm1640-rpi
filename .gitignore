@@ -5,5 +5,6 @@
 *.os
 tm1640
 doc/build
+doc/source/doxygen-xml
 *~
 .sconsign.dblite

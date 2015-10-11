@@ -34,7 +34,7 @@ if on_rtd:
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.todo', 'sphinx.ext.coverage', 'breathe']
 
-breathe_projects = {'tm1640-rpi': 'build/doxygen-xml/'}
+breathe_projects = {'tm1640-rpi': 'doxygen-xml/'}
 breathe_default_project = 'tm1640-rpi'
 
 # Add any paths that contain templates here, relative to this directory.
