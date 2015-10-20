@@ -10,7 +10,7 @@ Initialise the display
 
 In order to connect to the display, you can use the defaults from the standalone program and use GPIO 0 for data, and GPIO 1 for clock.  You can do this with::
 
-	>>> import tm1640
+	>>> from tm1640 import *
 	>>> display = TM1640()
 
 If the library is not installed correctly, this will throw an error::
