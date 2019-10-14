@@ -11,7 +11,7 @@ target_link_libraries (libtm1640 wiringPi)
 add_executable (tm1640 src/main.c)
 target_link_libraries (tm1640 libtm1640)
 target_include_directories (tm1640 PUBLIC
-	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/libtm1640>
+	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/libtm1640>
 	$<INSTALL_INTERFACE:include>)
 
 include (GNUInstallDirs)
