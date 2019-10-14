@@ -6,7 +6,7 @@ add_library (libtm1640 SHARED
 set_target_properties (libtm1640
 	PROPERTIES
 	PUBLIC_HEADER src/libtm1640/tm1640.h)
-target_link_libraries (libtm1640 wiringpi)
+target_link_libraries (libtm1640 wiringPi)
 
 add_executable (tm1640 src/main.c)
 target_link_libraries (tm1640 libtm1640)
