@@ -8,7 +8,7 @@ set_target_properties (libtm1640
 	PROPERTIES
 	PREFIX ""  # fix "liblib"
 	PUBLIC_HEADER src/libtm1640/tm1640.h)
-target_link_libraries (libtm1640 wiringPi)
+target_link_libraries (libtm1640)
 
 # tm1640 (CLI tool)
 add_executable (tm1640 src/main.c)

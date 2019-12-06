@@ -23,21 +23,21 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
-#include <wiringPi.h>
+#include <unistd.h>
 
 /**
  * Default data GPIO pin to use.
  *
  * Used by the standalone tm1640 application in order to set which display to use.
  */
-#define DIN_PIN 0
+#define DIN_PIN 17
 
 /**
  * Default clock GPIO pin to use.
  *
  * Used by the standalone tm1640 application in order to set which display to use.
  */
-#define SCLK_PIN 1
+#define SCLK_PIN 18
 
 /**
  * Used by tm1640_displayWrite
@@ -62,23 +62,19 @@
  */
 typedef struct {
 	/**
-	 * WiringPi GPIO pin for display clock (SCLK).
+	 * Opaque pointer for internal data structure.
+	 * This is not part of the API.
 	 */
-	int clockPin;
-	
-	/**
-	 * WiringPi GPIO pin for display data (DIN).
-	 */
-	int dataPin;
+	void* _internal;
 } tm1640_display;
 
 /**
  * Initialises the display.
  *
- * @param clockPin WiringPi pin identifier to use for clock (SCLK)
- * @param dataPin WiringPi pin identifier to use for data (DIN)
+ * @param clockPin GPIO pin identifier to use for clock (SCLK)
+ * @param dataPin GPIO pin identifier to use for data (DIN)
  *
- * @return NULL if wiringPiSetup() fails (permission error)
+ * @return NULL if setup fails (eg: permission error)
  * @return pointer to tm1640_display on successful initialisation.
  */
 tm1640_display* tm1640_init(int clockPin, int dataPin);
@@ -112,7 +108,7 @@ char tm1640_invertVertical(char input);
  * @return -EINVAL if offset + length > 16
  * @return 0 on success.
  */
-int tm1640_displayWrite(tm1640_display* display, int offset, const char * string, char length, int invertMode);
+int tm1640_displayWrite(tm1640_display* display, int offset, const char* string, char length, int invertMode);
 
 /**
  * @private
@@ -157,7 +153,7 @@ void tm1640_displayOff(tm1640_display* display);
  * @param data Pointer to data that should be appended, or NULL if no data is to be passed.
  * @param len Length of data.
  */
-void tm1640_send(tm1640_display* display, char cmd, char * data, int len );
+void tm1640_send(tm1640_display* display, char cmd, char* data, int len);
 
 /**
  * @private
@@ -168,7 +164,7 @@ void tm1640_send(tm1640_display* display, char cmd, char * data, int len );
  * @param display TM1640 display structure to use this for this operation.
  * @param out Byte to send
  */
-void tm1640_sendRaw(tm1640_display* display, char out );
+void tm1640_sendRaw(tm1640_display* display, char out);
 
 /**
  * @private
@@ -177,6 +173,6 @@ void tm1640_sendRaw(tm1640_display* display, char out );
  * @param display TM1640 display structure to use for this operation.
  * @param cmd Command code to send
  */
-void tm1640_sendCmd(tm1640_display* display, char cmd );
+void tm1640_sendCmd(tm1640_display* display, char cmd);
 
 #endif
