@@ -1,6 +1,6 @@
 """
 src/python/tm1640.py - Python interface shim for libtm1640.
-Copyright 2013 Michael Farrell <http://micolous.id.au/>
+Copyright 2013, 2019 Michael Farrell <http://micolous.id.au/>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the version 3 GNU General Public License as
@@ -38,16 +38,19 @@ class TM1640(object):
 	Interface class for connecting to a TM1640 display IC over the Raspberry Pi's GPIO pins.
 	
 	"""
-	def __init__(self, clock_pin=18, data_pin=17):
+	def __init__(self, clock_pin=18, data_pin=17, lib_path=None):
 		"""
 		Initialises	a connection to the TM1640 display.
-		
+
 		:param clock_pin: GPIO connected to the clock pin.
 		:type clock_pin: int
-		
+
 		:param data_pin: GPIO connected to the data pin.
 		:type data_pin: int
-		
+
+		:param lib_path: Full path to ``libtm1640.so``.
+		:type lib_path: str
+
 		:throws ImportError: If ``libtm1640.so`` could not be found by your dynamic linker.  Typically ``libtm1640.so`` should be installed in to ``/usr/lib``.
 		
 		:throws Exception: If there is a problem accessing BCM GPIO, typically caused by lack of permissions.
@@ -56,12 +59,13 @@ class TM1640(object):
 		self._libtm1640 = None
 		
 		# Find the library name first.
-		tm1640_so = ctypes.util.find_library('tm1640')
+		if lib_path is None:
+			lib_path = ctypes.util.find_library('tm1640')
 		
-		if tm1640_so == None:
+		if lib_path is None:
 			raise ImportError('Could not find libtm1640 in your library search path')
 
-		self._libtm1640 = ctypes.cdll.LoadLibrary(tm1640_so)
+		self._libtm1640 = ctypes.cdll.LoadLibrary(lib_path)
 
 		self._display = self._libtm1640.tm1640_init(clock_pin, data_pin)
 		if self._display == 0:
@@ -99,7 +103,7 @@ class TM1640(object):
 		Turns on the display.
 		
 		:param brightness: The brightness level to set on the display, between 1 and 7.  1 is dimmest, 7 is brightest.
-		:type brighness: int
+		:type brightness: int
 		
 		"""
 		assert 1 <= brightness <= 7, 'Brightness value must be 1 - 7'
