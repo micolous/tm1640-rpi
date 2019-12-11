@@ -1,6 +1,6 @@
 // src/libtm1640/tm1640.c - Main interface code for TM1640
 // Copyright 2013 FuryFire
-// Copyright 2013 Michael Farrell <http://micolous.id.au/>
+// Copyright 2013, 2019 Michael Farrell <http://micolous.id.au/>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -42,7 +42,6 @@ char tm1640_invertVertical(char input) {
 		((input & 0x10) << 1) |
 		((input & 0x20) >> 1);
 }
-
 
 int tm1640_displayWrite(tm1640_display* display, int offset, const char * string, char length, int invertMode) {
 
@@ -144,7 +143,7 @@ int _tm1640_write_and_close(const char* fileName, const char* data, int len) {
 }
 
 FILE* _tm1640_open_pin(int pin) {
-	#define BUF_MAX 30
+	#define BUF_MAX 50
 	char buf[BUF_MAX];
 	int len = snprintf(buf, BUF_MAX, "%d", pin);
 
@@ -188,6 +187,8 @@ tm1640_display* tm1640_init(int clockPin, int dataPin)
 		fclose(fd);
 		return NULL;
 	}
+
+	memset(display, 0, sizeof(tm1640_display));
 	display->_internal = malloc(sizeof(_tm1640_display_internal));
 	if (display->_internal == NULL) {
 		free(display);
@@ -196,13 +197,12 @@ tm1640_display* tm1640_init(int clockPin, int dataPin)
 		return NULL;
 	}
 
-	// clear for good measure
-	memset(display, 0, sizeof(tm1640_display));	
+	memset(display->_internal, 0, sizeof(_tm1640_display_internal));
+	_DISPLAY_INTERNAL->fc = fc;
+	_DISPLAY_INTERNAL->fd = fd;
 
 	_tm1640_digital_write(fc, 1);
 	_tm1640_digital_write(fd, 1);
-	_DISPLAY_INTERNAL->fc = fc;
-	_DISPLAY_INTERNAL->fd = fd;
 	return display;
 }
 
