@@ -59,13 +59,13 @@ class TM1640(object):
 		tm1640_so = ctypes.util.find_library('tm1640')
 		
 		if tm1640_so == None:
-			raise ImportError, 'Could not find libtm1640 in your library search path'
+			raise ImportError('Could not find libtm1640 in your library search path')
 
 		self._libtm1640 = ctypes.cdll.LoadLibrary(tm1640_so)
 
 		self._display = self._libtm1640.tm1640_init(clock_pin, data_pin)
 		if self._display == 0:
-			raise Exception, 'Failed to initialise display'
+			raise Exception('Failed to initialise display')
 	
 	def __del__(self):
 		# free() connection structure.
@@ -92,7 +92,7 @@ class TM1640(object):
 		result = self._libtm1640.tm1640_displayWrite(self._display, offset, string, len(string), invert_mode)
 		
 		if result != 0:
-			raise Exception, 'Failed to write to display'
+			raise Exception('Failed to write to display')
 	
 	def on(self, brightness=7):
 		"""
