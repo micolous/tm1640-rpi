@@ -27,11 +27,6 @@ $ sudo make install
 $ sudo python setup.py install
 ```
 
-	# cmake .
-	# make
-	# sudo make install
-	# python setup.py install
-
 ## Documentation ##
 
 Documentation is provided in the `doc` folder of this project, and can be generated if Sphinx and Doxygen are installed:

@@ -16,9 +16,13 @@ When you compile your program, you will need to tell the linker to use :file:`li
 Initialise the display
 ----------------------
 
-In order to connect to the display, always need to pass the GPIO pins you wish to use.  This is normally GPIO 0 for data, and GPIO 1 for clock::
+In order to connect to the display, always need to pass the GPIO pins you wish to use.  This is normally GPIO 18 for clock, and GPIO 17 for data::
 
-	tm1640_display* display = tm1640_init(1, 0);
+	tm1640_display* display = tm1640_init(18, 17);
+
+You can also use the defaults::
+
+	tm1640_display* display = tm1640_init(SCLK_PIN, DIN_PIN);
 
 You should then verify that there was no error while initialising the display.  :c:func:`tm1640_init` returns ``NULL`` on error::
 
