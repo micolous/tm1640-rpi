@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 src/python/tm1640.py - Python interface shim for libtm1640.
 Copyright 2013 Michael Farrell <http://micolous.id.au/>
