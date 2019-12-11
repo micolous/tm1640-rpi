@@ -144,7 +144,7 @@ void tm1640_displayOff(tm1640_display* display);
 
 /**
  * @private
- * Sends a cmd followed by len amount of data. Includes delay from wiringPi.
+ * Sends a cmd followed by len amount of data, and a short delay.
  *
  * Bitbanging the output pins too fast creates unpredictable results.
  *
@@ -159,7 +159,7 @@ void tm1640_send(tm1640_display* display, char cmd, char* data, int len);
  * @private
  * Shifts out the byte on the port.
  *
- * Implementing this with WiringPi directly is too fast for the IC.
+ * Using this without additional delays is too fast for the IC.
  *
  * @param display TM1640 display structure to use this for this operation.
  * @param out Byte to send
@@ -168,7 +168,7 @@ void tm1640_sendRaw(tm1640_display* display, char out);
 
 /**
  * @private
- * Send a single byte command
+ * Sends a single byte command.
  *
  * @param display TM1640 display structure to use for this operation.
  * @param cmd Command code to send

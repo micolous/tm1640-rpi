@@ -39,14 +39,14 @@ class TM1640(object):
 	Interface class for connecting to a TM1640 display IC over the Raspberry Pi's GPIO pins.
 	
 	"""
-	def __init__(self, clock_pin=1, data_pin=0):
+	def __init__(self, clock_pin=18, data_pin=17):
 		"""
 		Initialises	a connection to the TM1640 display.
 		
-		:param clock_pin: WiringPi GPIO that has the clock pin plugged into.
+		:param clock_pin: GPIO connected to the clock pin.
 		:type clock_pin: int
 		
-		:param data_pin: WiringPi GPIO that has the data pin plugged into.
+		:param data_pin: GPIO connected to the data pin.
 		:type data_pin: int
 		
 		:throws ImportError: If ``libtm1640.so`` could not be found by your dynamic linker.  Typically ``libtm1640.so`` should be installed in to ``/usr/lib``.
