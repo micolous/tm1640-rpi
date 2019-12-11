@@ -8,19 +8,20 @@ Initialise the display
 
 .. highlight:: pycon
 
-In order to connect to the display, you can use the defaults from the standalone program and use GPIO 0 for data, and GPIO 1 for clock.  You can do this with::
+In order to connect to the display, you can use the defaults from the standalone program and use GPIO 18 for clock, and GPIO 17 for data.  You can do this with::
 
 	>>> from tm1640 import *
 	>>> display = TM1640()
 
 If the library is not installed correctly, this will throw an error::
 
-	Traceback (most recent call last):
-	  File "tm1640.py", line 37, in __init__
-	    raise ImportError, 'Could not find libtm1640 in PATH'
 	ImportError: Could not find libtm1640 in PATH
 
 If this occurs, make sure that :file:`libtm1640.so` is in your dynamic loader's path.  This typically means it should be located at :file:`/usr/lib/libtm1640.so`, and you need to refresh the dynamic loader's cache by executing :command:`ldconfig`.  For more information, see :manpage:`ld.so(8)`.
+
+You can also explicitly override the path with the ``lib_path`` parameter::
+
+	>>> display = TM1640(lib_path='/home/pi/libtm1640.so')
 
 If you wish to use a different set of display pins, you can set this in the :py:class:`TM1640` constructor as follows::
 

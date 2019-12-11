@@ -1,6 +1,6 @@
 // src/libtm1640/tm1640.c - Main interface code for TM1640
 // Copyright 2013 FuryFire
-// Copyright 2013 Michael Farrell <http://micolous.id.au/>
+// Copyright 2013, 2019 Michael Farrell <http://micolous.id.au/>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,6 +17,18 @@
 #include "tm1640.h"
 #include "font.h"
 
+const char* HIGH = "1";
+const char* LOW = "0";
+
+// THIS STRUCTURE IS NOT PART OF THE API.
+typedef struct {
+	// Clock pin file descriptor
+	FILE* fc;
+	// Data pin file descriptor
+	FILE* fd;
+} _tm1640_display_internal;
+
+#define _DISPLAY_INTERNAL ((_tm1640_display_internal *)(display->_internal))
 
 char tm1640_invertVertical(char input) {
 	return (input & 0xC0) |
@@ -30,7 +42,6 @@ char tm1640_invertVertical(char input) {
 		((input & 0x10) << 1) |
 		((input & 0x20) >> 1);
 }
-
 
 int tm1640_displayWrite(tm1640_display* display, int offset, const char * string, char length, int invertMode) {
 
@@ -83,13 +94,13 @@ int tm1640_displayWrite(tm1640_display* display, int offset, const char * string
 	return 0;
 }
 
-
 char tm1640_ascii_to_7segment(char ascii) {
-	if (ascii < FONT_FIRST_CHAR || ascii > FONT_LAST_CHAR) {
+	if (((unsigned char)ascii) < FONT_FIRST_CHAR || 
+		((unsigned char)ascii) > FONT_LAST_CHAR) {
 		// character than is not in font, skip.
 		return 0;
 	}
-	
+
 	return DEFAULT_FONT[ascii - FONT_FIRST_CHAR];
 }
 
@@ -113,33 +124,101 @@ void tm1640_displayOff(tm1640_display* display) {
 	tm1640_sendCmd(display, 0x80);
 }
 
+FILE* _tm1640_open_helper(const char* fileName) {
+	FILE* fd = fopen(fileName, "w");
+	if (fd == NULL) {
+		perror(fileName);
+	}
+	return fd;
+}
+
+int _tm1640_write_and_close(const char* fileName, const char* data, int len) {
+	FILE* fd = _tm1640_open_helper(fileName);
+	if (fd == NULL) {
+		return -1;
+	}
+	fwrite(data, len, 1, fd);
+	fclose(fd);
+	return 0;
+}
+
+FILE* _tm1640_open_pin(int pin) {
+	#define BUF_MAX 50
+	char buf[BUF_MAX];
+	int len = snprintf(buf, BUF_MAX, "%d", pin);
+
+	// Export the pin
+	int err = _tm1640_write_and_close("/sys/class/gpio/export", buf, len);
+	if (err != 0) return NULL;
+
+	// Set direction = out
+	snprintf(buf, BUF_MAX, "/sys/class/gpio/gpio%d/direction", pin);
+	err = _tm1640_write_and_close(buf, "out", 3);
+
+	// Open the FD
+	snprintf(buf, BUF_MAX, "/sys/class/gpio/gpio%d/value", pin);
+	FILE* fd = _tm1640_open_helper(buf);	
+	return fd;
+}
+
+void _tm1640_digital_write(FILE* fd, int state) {
+	fwrite(state > 0 ? HIGH : LOW, 1, 1, fd);
+	fflush(fd);
+}
 
 tm1640_display* tm1640_init(int clockPin, int dataPin)
 {
-	if(wiringPiSetup( ) == -1) 
-	{
+	// Setup pins first
+	FILE* fc = _tm1640_open_pin(clockPin);
+	if (fc == NULL) {
 		return NULL;
 	}
-	digitalWrite(clockPin, HIGH );
-	digitalWrite(dataPin, HIGH );
-
-	pinMode(clockPin, OUTPUT );
-	pinMode(dataPin, OUTPUT );
 	
+	FILE* fd = _tm1640_open_pin(dataPin);
+	if (fd == NULL) {
+		fclose(fc);
+		return NULL;
+	}
+	
+	// We have open pins, now setup structure
 	tm1640_display* display = malloc(sizeof(tm1640_display));
-	
-	// clear for good measure
+	if (display == NULL) {
+		fclose(fc);
+		fclose(fd);
+		return NULL;
+	}
+
 	memset(display, 0, sizeof(tm1640_display));
-	
-	display->clockPin = clockPin;
-	display->dataPin = dataPin;
+	display->_internal = malloc(sizeof(_tm1640_display_internal));
+	if (display->_internal == NULL) {
+		free(display);
+		fclose(fc);
+		fclose(fd);
+		return NULL;
+	}
 
+	memset(display->_internal, 0, sizeof(_tm1640_display_internal));
+	_DISPLAY_INTERNAL->fc = fc;
+	_DISPLAY_INTERNAL->fd = fd;
+
+	_tm1640_digital_write(fc, 1);
+	_tm1640_digital_write(fd, 1);
 	return display;
-
 }
 
 
 void tm1640_destroy(tm1640_display* display) {
+	if (display == NULL) {
+		return;
+	}
+
+	if (display->_internal != NULL) {
+		fclose(_DISPLAY_INTERNAL->fc);
+		fclose(_DISPLAY_INTERNAL->fd);
+		free(display->_internal);
+		display->_internal = NULL;
+	}
+
 	free(display);
 }
 
@@ -149,19 +228,19 @@ void tm1640_sendRaw(tm1640_display* display, char out )
 	int i;
 	for(i = 0; i < 8; i++)
 	{
-		digitalWrite( display->dataPin, out & (1 << i) );
-		digitalWrite( display->clockPin, HIGH );
-		delayMicroseconds( 1 );
-		digitalWrite( display->clockPin, LOW );
+		_tm1640_digital_write(_DISPLAY_INTERNAL->fd, out & (1 << i));
+		_tm1640_digital_write(_DISPLAY_INTERNAL->fc, 1);
+		usleep(1);
+		_tm1640_digital_write(_DISPLAY_INTERNAL->fc, 0);
 	}
 }
 
-void tm1640_send(tm1640_display* display, char cmd, char * data, int len )
+void tm1640_send(tm1640_display* display, char cmd, char * data, int len)
 {
-	//Issue start command
-	digitalWrite( display->dataPin, LOW );
-	delayMicroseconds( 1 );
-	digitalWrite( display->clockPin, LOW );
+	// Issue start command
+	_tm1640_digital_write(_DISPLAY_INTERNAL->fd, 0);
+	usleep(1);
+	_tm1640_digital_write(_DISPLAY_INTERNAL->fc, 0);
 
 	tm1640_sendRaw(display, cmd);
 	if(data != NULL)
@@ -173,19 +252,19 @@ void tm1640_send(tm1640_display* display, char cmd, char * data, int len )
 		}
 	}
 	//Issue stop command
-	digitalWrite( display->clockPin, HIGH );
-	delayMicroseconds( 1 );
-	digitalWrite( display->dataPin, HIGH );
+	_tm1640_digital_write(_DISPLAY_INTERNAL->fc, 1);
+	usleep(1);
+	_tm1640_digital_write(_DISPLAY_INTERNAL->fd, 1);
 }
 
 
 void tm1640_sendCmd(tm1640_display* display, char cmd )
 {
-	tm1640_send(display, 0x40, 0 ,0 );
-	tm1640_send(display, cmd, 0, 0 );
+	tm1640_send(display, 0x40, 0, 0);
+	tm1640_send(display, cmd, 0, 0);
 
-	digitalWrite(display->dataPin, LOW );
-	digitalWrite( display->clockPin, LOW );
-	digitalWrite( display->clockPin, HIGH );
-	digitalWrite( display->dataPin, HIGH );
+	_tm1640_digital_write(_DISPLAY_INTERNAL->fd, 0);
+	_tm1640_digital_write(_DISPLAY_INTERNAL->fc, 0);
+	_tm1640_digital_write(_DISPLAY_INTERNAL->fc, 1);
+	_tm1640_digital_write(_DISPLAY_INTERNAL->fd, 1);
 }

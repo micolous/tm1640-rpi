@@ -6,7 +6,7 @@ The command-line program ``tm1640`` will let you drive a display from the comman
 However, it has a number of limitations:
 
 * You cannot write to the screen with offsets, so you have to update the entire screen at once.
-* You can only drive one display, using GPIO 0 and 1.
+* You can only drive one display, using GPIO 18 for clock, and GPIO 17 for data.
 * Because of the overheads involved in creating a new process, update speeds will be slower than using the library.
 
 The purpose of supplying a command-line interface is to facilitate testing and rapid prototyping.  It is strongly recommended you write any applications to use the library instead.

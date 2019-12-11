@@ -14,8 +14,8 @@ Connect:
 
 * Pin 2 to ``VIN``
 * Pin 6 to ``GND``
-* Pin 11 (WiringPi GPIO 0 / BCM GPIO 17) to ``DIN``
-* Pin 12 (WiringPi GPIO 1 / BCM GPIO 18) to ``CLK``
+* Pin 11 (BCM GPIO 17) to ``DIN``
+* Pin 12 (BCM GPIO 18) to ``CLK``
 
 You can also wire this to `other GPIO pins`_ on the Raspberry Pi.  There are a total of 12 GPIO lines exposed.  However, the command-line interface will only work when the display is wired using this pin configuration.  The libraries do not have this restriction.
 

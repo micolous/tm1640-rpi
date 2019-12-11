@@ -12,12 +12,20 @@ Forked off into a seperate project with a bunch of work done on it by [Michael F
 
 ## Installation ##
 
-You will need to install the [WiringPi library](https://projects.drogon.net/raspberry-pi/wiringpi/) and scons.
+You will need to install CMake and a compiler:
+
+```
+$ sudo apt install cmake build-essential
+```
 
 You can then build and install the library and Python bindings with:
 
-    # scons install
-	# python setup.py install
+```
+$ cmake .
+$ make
+$ sudo make install
+$ sudo python setup.py install
+```
 
 ## Documentation ##
 

@@ -8,3 +8,8 @@ doc/build
 doc/source/doxygen-xml
 *~
 .sconsign.dblite
+CMakeCache.txt
+CMakeFiles
+cmake_install.cmake
+Makefile
+*.dylib
